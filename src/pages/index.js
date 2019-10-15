@@ -23,8 +23,8 @@ export default class index extends React.Component{
 							<div>
 								<h3>Descubre de lo que se esta hablando a nivel nacional e internacional</h3>
 								<h4>Unete hoy mismo</h4>
-								<Link className={'btn btn-primary btn-block'} to="">Registrarse</Link>
-								<Link className={'btn btn-primary btn-block'} to="">Ingresar</Link>
+								<Button big color='blue' attached style={{marginBottom: '10px'}}>Registrarse</Button>
+								<Button big color='blue' attached>Ingresar</Button>
 							</div>
 						</Col>
 					</Row>
