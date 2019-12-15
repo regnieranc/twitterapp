@@ -2,23 +2,40 @@ import React from 'react'
 import {Container, Row, Col} from 'react-grid-system'
 import { Form, TextArea, Image } from 'semantic-ui-react'
 import CountUp from 'react-countup';
+import {ComprobarUsuario} from './../utils/functions'
+import {Redirect} from 'react-router-dom'
+import {Server, Api, MyHeaders} from './../utils/constant'
 
 export default class Perfil extends React.Component{
 	constructor(props) {
 		super(props);
 		this.state = {
-			nick:null
+			nick:null,
+			acceso:null
 		}
 	}
 
-	componentDidMount(){
-		this.setState({nick:this.props.match.params.nick})
+	componentDidMount(){debugger
+		if(ComprobarUsuario(Server+Api.usuario.me, MyHeaders)){
+			this.setState({nick:this.props.match.params.nick, acceso:true})
+			console.log('si')
+		}else{
+			this.setState({acceso:false})
+			console.log('no')
+		}
+		
 		console.log(this.props.match.params.nick)
 	}
+
+
 
 	render(){
 		return(
 			<Container>
+			{
+				!this.state.acceso?
+				<Redirect to = "/" /> : null
+			}
 				<Row style={{marginTop:'20px',marginBottom: '20px'}}>
 					<Col debug>
 						<Row>

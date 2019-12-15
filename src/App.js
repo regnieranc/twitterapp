@@ -11,7 +11,6 @@ function App(){
             <Switch>
             	<Route path='/perfil/:nick' component={Perfil} />
                 <Route path='/' component={Index} />
-                
             </Switch>
         </BrowserRouter>
     )
