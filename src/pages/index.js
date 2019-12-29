@@ -52,7 +52,7 @@ export default class index extends React.Component{
 			}
 			console.log(json)
 			console.log(this.state)
-			this.setState({response:false})
+			//this.setState({response:false})
 		}catch(e){
 			console.log(e)
 			this.setState({response:false})

@@ -9,7 +9,7 @@ function App(){
     return(
         <BrowserRouter>
             <Switch>
-            	<Route path='/perfil/:nick' component={Perfil} />
+            	<Route path='/perfil/:nick'  render={props => <Perfil key={props.match.params.nick} {...props} />}/>
                 <Route path='/' component={Index} />
             </Switch>
         </BrowserRouter>

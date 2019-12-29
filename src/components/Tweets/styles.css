@@ -1,0 +1,16 @@
+.tweet{
+	background-color: white !important;
+	padding: 10px 0px;
+	border-radius: 6px;
+	margin: 10px 0 16px 0;
+}
+
+.timeago{
+	color: #595959 !important;
+	font-size:12px !important;
+	text-align:right !important;
+}
+
+.mt-50{
+	margin-top: 50px !important;
+}
