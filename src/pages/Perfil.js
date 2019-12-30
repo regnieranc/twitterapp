@@ -4,7 +4,7 @@ import { Form, TextArea, Image, Icon, Menu,Button } from 'semantic-ui-react'
 import CountUp from 'react-countup';
 import {ComprobarUsuario} from './../utils/functions'
 import {Redirect} from 'react-router-dom'
-import {Server, Api, MyHeaders} from './../utils/constant'
+import {Server, Api, MyHeaders, ServerRoot} from './../utils/constant'
 import Tweets from "./../components/Tweets"
 
 export default class Perfil extends React.Component{
@@ -21,7 +21,7 @@ export default class Perfil extends React.Component{
 			tweets:null,//los tweets del usuario,
 			soyyo:null,
 			esamigo:null,
-			foto:'http://custom13.com/15702/parche-bordado-cuadrado-metallica.jpg',
+			imagen:null,
 			mi_id:null,
 			seguidores:null,
 			siguiendo:null
@@ -31,16 +31,28 @@ export default class Perfil extends React.Component{
 
 	async componentDidMount(){
 		let nickname=this.props.match.params.nick
-		let response=await ComprobarUsuario(Server+Api.usuario.me, MyHeaders, nickname)
+		let bearer = await localStorage.getItem('Bearer')
+		let headers={
+			'Accept': 'application/json',
+			'Authorization': `Bearer ${bearer}`
+		}
+		let response=await ComprobarUsuario(Server+Api.usuario.me, headers, nickname)
 		if(response.response){
 			let {data, result} = response
-			console.log(result,data, 'este repsosne')
 			if(result.proceso==1){
+				let foto=result.data.foto
+				let fondo=result.data.fotofondo
+				if(!foto){
+					foto=`${ServerRoot}storage/images/images_perfil/default.jpg`
+				}
+				if(!fondo){
+					fondo=`${ServerRoot}storage/images/images_fondo/fondo1.jpg`
+				}
 				this.setState({nick:`@${result.data.nick}`, acceso:true, nombre:result.data.nombre, 
 					descripcion:result.data.descripcion, usuario_id:result.data.idurl,
-					fondoImagen:result.data.fotofondo, imagen:result.data.foto,
+					fondoImagen:fondo, imagen:foto,
 					soyyo:result.data.soyyo, esamigo:result.data.amigo, mi_id:data.id})
-				console.log(this.state)
+				console.log(this.state.imagen)
 				this.getInfoTwitter()
 			}
 			
@@ -66,7 +78,8 @@ export default class Perfil extends React.Component{
 				if(this.state.soyyo || this.state.esamigo){
 					let url = Server+Api.tweets.listar
 					let formulario = new FormData()
-					formulario.append('id', this.state.usuario_id)
+					formulario.append('id', this.state.usuario_id)//id perfil
+				    formulario.append('idlog', this.state.mi_id)//id logueado
 					let response =await  fetch(url, {body:formulario, method:'post', headers:MyHeaders})
 					let data = await response.json()
 					if(data.proceso==1){
@@ -77,6 +90,7 @@ export default class Perfil extends React.Component{
 				console.log('tab tweet')
 				break;
 			case "seguidores":
+			console.log(this.state.soyyo, this.state.esamigo)
 				if(this.state.soyyo || this.state.esamigo){
 					let url = Server+Api.usuario.seguidores
 					let formulario = new FormData()
@@ -87,6 +101,8 @@ export default class Perfil extends React.Component{
 						this.setState({seguidores:data.data})
 
 					}
+				}else{
+					this.setState({seguidores:[]})
 				}
 				break;
 			case "siguiendo":
@@ -100,6 +116,8 @@ export default class Perfil extends React.Component{
 						this.setState({siguiendo:data.data})
 
 					}
+				}else{
+					this.setState({siguiendo:[]})
 				}
 				break;
 		}
@@ -153,6 +171,10 @@ export default class Perfil extends React.Component{
 
 	}
 
+	disparador = () => {
+		this.getInfoTwitter()
+	}
+
 	render(){
 		return(
 			<Container>
@@ -162,23 +184,33 @@ export default class Perfil extends React.Component{
 			}
 				<Row>
 					{
-						this.state.fondoImagen?
+						!this.state.fondoImagen?
 						<Col debug>
 
 						</Col> :
 						<Col debug className={'fondoImagen'}>
-							<Icon name='camera' onClick={this.changeFondo} />
+							<div>
+								<Icon name={'camera'} onClick={this.changeFondo} size='big' style={{opacity:0.5, cursor:'pointer'}}/>
+							</div>
+							
 						</Col>
 					}
 				</Row>
 				<Row style={{marginTop:'20px',marginBottom: '20px'}} className={"contenedor"}>
-					
-					<Col debug>
+					<Col md={12}>
 						<Row>
-							<Col md={4} debug style={{textAlign:'center'}}>
+							<Col md={4} style={{textAlign:'center'}}>
 								<Row>
 									<Col>
-										<Image src={this.state.foto} size='small' avatar centered />
+									{
+										this.state.imagen?
+										<Image src={this.state.imagen} size='small'  label={{icon:'camera'}}
+											className={'circular'}
+										/> : 
+											<Image src={this.state.imagen} size='small' avatar centered/>
+									}
+										
+										
 									</Col>
 								</Row>
 								<Row>
@@ -187,38 +219,39 @@ export default class Perfil extends React.Component{
 									</Col>
 								</Row>
 							</Col>
-							<Col md={8} debug>
-								<Row>
-									<Col md={4} style={{textAlign:'center'}}>
-										<h4>tweets</h4>
-										<CountUp
-										  start={0}
-										  end={100}
-										  duration={2}
-										/>
-									</Col>
-									<Col md={4} style={{textAlign:'center'}}>
-										<h4>seguidores</h4>
-										<CountUp
-										  start={0}
-										  end={100}
-										  duration={2}
-										/>
-									</Col>
-									<Col md={4} style={{textAlign:'center'}}>
-										<h4>siguiendo</h4>
-										<CountUp
-										  start={0}
-										  end={100}
-										  duration={2}
-										/>
-									</Col>
-								</Row>
+							<Col md={8}>
+								
 							</Col>
 						</Row>
 					</Col>
+					<Col md={4}>
+					</Col>
+					<Col md={2} style={{textAlign:'center'}}>
+						<h4>tweets</h4>
+						<CountUp
+							start={0}
+							end={100}
+							duration={2}
+						/>
+					</Col>
+					<Col md={2} style={{textAlign:'center'}}>
+						<h4>seguidores</h4>
+						<CountUp
+						  start={0}
+						  end={100}
+						  duration={2}
+						/>
+					</Col>
+					<Col md={2} style={{textAlign:'center'}}>
+						<h4>siguiendo</h4>
+						<CountUp
+						  start={0}
+						  end={100}
+						  duration={2}
+						/>
+					</Col>
+					<Col md={2}></Col>
 				</Row>
-				
 				<Row className={'mt-50'}>
 					<Col md={4} >
 						<Row>
@@ -284,10 +317,11 @@ export default class Perfil extends React.Component{
 				        	tweets={this.state.tweets}
 				        	soyyo={this.state.soyyo}
 				        	esamigo={this.state.esamigo}
-				        	fotoperfil={this.state.foto}
+				        	fotoperfil={this.state.imagen}
 				        	usuario_id={this.state.mi_id}
 				        	seguidores={this.state.seguidores}
 				        	siguiendo={this.state.siguiendo}
+				        	disparador={this.disparador}
 				        />
 						
 					</Col>
