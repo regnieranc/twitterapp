@@ -1,5 +1,6 @@
-export const Server = 'https://www.apitwitter.regnierneira.com/api/'
-
+//export const Server = 'https://www.apitwitter.regnierneira.com/api/'
+export const Server = "http://localhost:8000/api/"
+export const ServerRoot = "http://localhost:8000/"
 export const Api={
 	usuario:{
 		register:'usuario/register',

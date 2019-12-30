@@ -50,6 +50,7 @@ export default class index extends Component{
 										tweets={this.props.tweets}
 										fotoperfil={this.props.fotoperfil}
 										usuario_id={this.props.usuario_id}
+										disparador={this.props.disparador}
 									/> : null
 								}
 								
@@ -63,7 +64,7 @@ export default class index extends Component{
 					<Row>
 						<Col>
 							{
-								this.props.soyyo?
+								this.props.seguidores?
 								<ListaSeguidores
 									seguidores={this.props.seguidores}
 									opcion={0}
@@ -78,7 +79,7 @@ export default class index extends Component{
 					<Row>
 						<Col>
 							{
-								this.props.soyyo?
+								this.props.siguiendo?
 								<ListaSeguidores
 									siguiendo={this.props.siguiendo}
 									opcion={1}
