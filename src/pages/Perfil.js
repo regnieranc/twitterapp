@@ -1,11 +1,12 @@
 import React from 'react'
 import {Container, Row, Col} from 'react-grid-system'
-import { Form, TextArea, Image, Icon, Menu,Button } from 'semantic-ui-react'
+import { Form, TextArea, Image, Icon, Menu,Button,  } from 'semantic-ui-react'
 import CountUp from 'react-countup';
 import {ComprobarUsuario} from './../utils/functions'
 import {Redirect} from 'react-router-dom'
 import {Server, Api, MyHeaders, ServerRoot} from './../utils/constant'
 import Tweets from "./../components/Tweets"
+import UploadImage from './../components/UploadImage'
 
 export default class Perfil extends React.Component{
 	constructor(props) {
@@ -62,8 +63,8 @@ export default class Perfil extends React.Component{
 		
 	}
 
-	changeFondo = () => {
-		console.log('fondo')
+	changeFondo = (opcion) => {
+		console.log('fondo', opcion)
 	}
 
 	handleItemClick = async (e, { name }) => {
@@ -190,9 +191,10 @@ export default class Perfil extends React.Component{
 						</Col> :
 						<Col debug className={'fondoImagen'}>
 							<div>
-								<Icon name={'camera'} onClick={this.changeFondo} size='big' style={{opacity:0.5, cursor:'pointer'}}/>
+								<UploadImage
+									imagen={this.state.imagen}
+								 />
 							</div>
-							
 						</Col>
 					}
 				</Row>
@@ -204,9 +206,7 @@ export default class Perfil extends React.Component{
 									<Col>
 									{
 										this.state.imagen?
-										<Image src={this.state.imagen} size='small'  label={{icon:'camera'}}
-											className={'circular'}
-										/> : 
+										<Image src={this.state.imagen} size='small' className={'circular'} centered/> : 
 											<Image src={this.state.imagen} size='small' avatar centered/>
 									}
 										
