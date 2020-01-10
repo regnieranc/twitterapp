@@ -25,7 +25,10 @@ export default class Perfil extends React.Component{
 			imagen:null,
 			mi_id:null,
 			seguidores:null,
-			siguiendo:null
+			siguiendo:null,
+			cantidadseguidores:0,
+			cantidadsiguiendo:0,
+			cantidadtweets:0
 
 		}
 	}
@@ -88,10 +91,8 @@ export default class Perfil extends React.Component{
 
 					}
 				}
-				console.log('tab tweet')
 				break;
 			case "seguidores":
-			console.log(this.state.soyyo, this.state.esamigo)
 				if(this.state.soyyo || this.state.esamigo){
 					let url = Server+Api.usuario.seguidores
 					let formulario = new FormData()
@@ -122,6 +123,14 @@ export default class Perfil extends React.Component{
 				}
 				break;
 		}
+		let formulario = new FormData()
+	    formulario.append('id', this.state.usuario_id)//id logueado
+	    let response=await fetch(Server+Api.usuario.informacion, {body:formulario, method:'post', headers:MyHeaders})
+	    let data=await response.json()
+	    if(data.proceso==1){
+	    	await this.setState({cantidadseguidores:data.data.seguidores, cantidadtweets:data.data.tweets, cantidadsiguiendo:data.data.siguiendo})
+	    	console.log(this.state)
+	    }
 	}
 
 	twittear = async (e) => {
@@ -230,7 +239,7 @@ export default class Perfil extends React.Component{
 						<h4>tweets</h4>
 						<CountUp
 							start={0}
-							end={100}
+							end={this.state.cantidadtweets?this.state.cantidadtweets:0}
 							duration={2}
 						/>
 					</Col>
@@ -238,7 +247,7 @@ export default class Perfil extends React.Component{
 						<h4>seguidores</h4>
 						<CountUp
 						  start={0}
-						  end={100}
+						  end={this.state.cantidadseguidores?this.state.cantidadseguidores:0}
 						  duration={2}
 						/>
 					</Col>
@@ -246,7 +255,7 @@ export default class Perfil extends React.Component{
 						<h4>siguiendo</h4>
 						<CountUp
 						  start={0}
-						  end={100}
+						  end={this.state.cantidadsiguiendo?this.state.cantidadsiguiendo:0}
 						  duration={2}
 						/>
 					</Col>

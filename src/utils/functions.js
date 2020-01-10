@@ -9,8 +9,8 @@ export const ComprobarUsuario = async (url, headers, nickname) => {
 			let response = await fetch(url, {method:'post', headers:headers})
 			let data = await response.json()
 			if(data.id){
-				//let url="https://www.apitwitter.regnierneira.com/api/usuario/quienes"
-				let url="http://localhost:8000/api/usuario/quienes"
+				let url="https://www.apitwitter.regnierneira.com/api/usuario/quienes"
+				//let url="http://localhost:8000/api/usuario/quienes"
 				let formulario = new FormData()
 				formulario.append('nickname', nickname)
 				formulario.append('id', data.id)
